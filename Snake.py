@@ -13,6 +13,11 @@ okno = pygame.display.set_mode((sze, wys), 0, 32)
 pygame.display.set_caption('Snake')
 font = pygame.font.Font('C:\Windows\Fonts\Arial.ttf', 24)
 
+#--czszczenie ekranu--
+def czysc():
+    okno.fill((0,0,0))
+    pygame.display.update()
+
 #--tekst na srodku--
 def tekst(tresc):
     tekst = font.render(tresc, True, Bialy)
@@ -33,7 +38,7 @@ def pauza():
                     
                 if event.type == KEYDOWN and event.key == K_RETURN:
                     P = False
-                    okno.fill((0,0,0))
+                    czysc()
     
 #--menu--
 G = False 
@@ -67,7 +72,8 @@ while True:
     R = 1
     P = True
     while G == True:
-        okno.fill((0,0,0))
+        czysc()
+        B = False
         for event in pygame.event.get():
 
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -75,15 +81,19 @@ while True:
                 exit()
             
             if event.type == KEYDOWN:
-                if event.key == K_UP and R != 1:
+                if event.key == K_UP and R != 1 and B == False:
                     R = 0
-                elif event.key == K_DOWN and R != 0:
+                    B = True
+                if event.key == K_DOWN and R != 0 and B == False:
                     R = 1
-                elif event.key == K_RIGHT and R != 3:
+                    B = True
+                if event.key == K_RIGHT and R != 3 and B == False:
                     R = 2
-                elif event.key == K_LEFT and R != 2:
+                    B = True
+                if event.key == K_LEFT and R != 2 and B == False:
                     R = 3
-                elif event.key == K_p:
+                    B = True
+                if event.key == K_p:
                     pauza()
 
         #--zmiana kierunku--
