@@ -3,32 +3,42 @@ from pygame.locals import *
 from random import randrange
 pygame.init()
 
-Bialy = (255, 255, 255)
+White = (255, 255, 255)
 
-#--okno--
-roz = 10
-wys = 400
-sze = 400
-okno = pygame.display.set_mode((sze, wys), 0, 32)
+#--window--
+size = 10
+width = 400
+height = 400
+hScreen = 500
+window = pygame.display.set_mode((width, hScreen), 0, 32)
 pygame.display.set_caption('Snake')
 font = pygame.font.Font('C:\Windows\Fonts\Arial.ttf', 24)
 
-#--czszczenie ekranu--
-def czysc():
-    okno.fill((0,0,0))
+#--points--
+def points(count):
+    pygame.draw.rect(window, White, (0, 405, 400, 1), 10)
+    point = font.render(count, True, White)
+    frame = point.get_rect()
+    frame.center = (int(width/2 - size), 450)
+    window.blit(point, frame)
+    pygame.display.update()    
+
+#--clean screen--
+def clean():
+    window.fill((0,0,0))
     pygame.display.update()
 
-#--tekst na srodku--
-def tekst(tresc):
-    tekst = font.render(tresc, True, Bialy)
-    ramka = tekst.get_rect()
-    ramka.center = (int(sze/2 - roz), int(wys/2 - roz))
-    okno.blit(tekst, ramka)
+#--text--
+def write(text):
+    abcd = font.render(text, True, White)
+    frame = abcd.get_rect()
+    frame.center = (int(width/2 - size), int(height/2 - size))
+    window.blit(abcd, frame)
     pygame.display.update()
 
-def pauza():
+def pause():
     P = True
-    tekst('Nacisnij enter')
+    tekst('Press enter')
     while P == True:
         for event in pygame.event.get():
 
@@ -44,21 +54,20 @@ def pauza():
 G = False 
 while True:
     
-    #--poczatek--
-    x = int(sze/2 - roz)
-    y = int(wys/2 - roz)
+    #--start--
+    x = int(width/2 - size)
+    y = int(height/2 - size)
         
-    #--waz--
-    dlug = 4 
-    waz = [0] * dlug
-    for i in range(dlug):
-        waz[i] = [0] * 2
+    #--snake--
+    length = 4 
+    snake = [0] * length
+    for i in range(length):
+        snake[i] = [0] * 2
             
-    for i in range(dlug):
-        waz[i][0] = x
-        waz[i][1] = y
-        
-    tekst('Naciśnij enter aby rozpocząć')
+    for i in range(length):
+        snake[i][0] = x
+        snake[i][1] = y
+    tekst('Press enter to start')
     
     for event in pygame.event.get():
 
@@ -68,11 +77,12 @@ while True:
                 
             if event.type == KEYDOWN and event.key == K_RETURN:
                 G = True
-    #--gra--
+    #--game--          
     R = 1
     P = True
     while G == True:
         czysc()
+        punkty('4')
         B = False
         for event in pygame.event.get():
 
@@ -96,43 +106,42 @@ while True:
                 if event.key == K_p:
                     pauza()
 
-        #--zmiana kierunku--
-        if R == 0: waz[0][1] = waz[0][1] - roz
-        if R == 1: waz[0][1] = waz[0][1] + roz
-        if R == 2: waz[0][0] = waz[0][0] + roz
-        if R == 3: waz[0][0] = waz[0][0] - roz
+        #--control--
+        if R == 0: snake[0][1] = snake[0][1] - size
+        if R == 1: snake[0][1] = snake[0][1] + size
+        if R == 2: snake[0][0] = snake[0][0] + size
+        if R == 3: snake[0][0] = snake[0][0] - size
 
-        #--porazka--
-        if waz[0][0] < 0 or waz[0][0] > sze-10 or waz[0][1] < 0 or waz[0][1] > sze-10:
+        #--fail--
+        if snake[0][0] < 0 or snake[0][0] > width-10 or snake[0][1] < 0 or snake[0][1] > width-10:
             G = False
-        for i in range(1, dlug):
-            if waz[0][0] == waz[i][0] and waz[0][1] == waz[i][1]:
+        for i in range(1, length):
+            if snake[0][0] == snake[i][0] and snake[0][1] == snake[i][1]:
                 G = False
 
-        #--punkty--
+        #--points--
         if P == True:
-            xz = randrange(0, sze, roz)
-            yz = randrange(0, wys, roz)
+            xz = randrange(0, width, size)
+            yz = randrange(0, height, size)
             P = False
         
-        if waz[0][0] == xz and waz[0][1] == yz:
+        if snake[0][0] == xz and snake[0][1] == yz:
             P = True
             for i in range(2):
-                dlug += 1
-                waz.append([0]*2)
-                waz[dlug-1][0] = waz[dlug-2][0]
-                waz[dlug-1][1] = waz[dlug-2][1]
+                length += 1
+                snake.append([0]*2)
+                snake[length-1][0] = snake[length-2][0]
+                snake[length-1][1] = snake[length-2][1]
 
-        #--rysowanie weza--
-        for i in range(dlug):
-            pygame.draw.rect(okno, Bialy, (waz[i][0], waz[i][1], roz, roz), 1)
+        #--draw snake--
+        for i in range(length):
+            pygame.draw.rect(okno, Bialy, (snake[i][0], snake[i][1], size, size), 1)
 
-        #--przesuwanie tablicy--
-        for i in range(dlug - 1, 0, -1):
-            waz[i][0] = waz[i - 1][0]
-            waz[i][1] = waz[i - 1][1]
+        #--move--
+        for i in range(length - 1, 0, -1):
+            snake[i][0] = snake[i - 1][0]
+            snake[i][1] = snake[i - 1][1]
 
-        pygame.draw.rect(okno, Bialy, (xz, yz, roz, roz), 1)    
+        pygame.draw.rect(window, White, (xz, yz, size, size), 1)    
         pygame.display.update()
         pygame.time.delay(100)
-    
