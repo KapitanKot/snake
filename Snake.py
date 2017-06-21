@@ -12,43 +12,13 @@ height = 400
 hScreen = 500
 window = pygame.display.set_mode((width, hScreen), 0, 32)
 pygame.display.set_caption('Snake')
-font = pygame.font.Font('C:\Windows\Fonts\Arial.ttf', 24)
-
-#--points--
-def points(count):
-    pygame.draw.rect(window, White, (0, 405, 400, 1), 10)
-    point = font.render(count, True, White)
-    frame = point.get_rect()
-    frame.center = (int(width/2 - size), 450)
-    window.blit(point, frame)
-    pygame.display.update()    
+font = pygame.font.Font('C:\Windows\Fonts\Arial.ttf', 24) 
 
 #--clean screen--
 def clean():
     window.fill((0,0,0))
     pygame.display.update()
 
-#--text--
-def write(text):
-    abcd = font.render(text, True, White)
-    frame = abcd.get_rect()
-    frame.center = (int(width/2 - size), int(height/2 - size))
-    window.blit(abcd, frame)
-    pygame.display.update()
-
-def pause():
-    P = True
-    tekst('Press enter')
-    while P == True:
-        for event in pygame.event.get():
-
-                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                    pygame.quit()
-                    exit()
-                    
-                if event.type == KEYDOWN and event.key == K_RETURN:
-                    P = False
-                    czysc()
     
 #--menu--
 G = False 
@@ -67,7 +37,6 @@ while True:
     for i in range(length):
         snake[i][0] = x
         snake[i][1] = y
-    tekst('Press enter to start')
     
     for event in pygame.event.get():
 
@@ -81,8 +50,7 @@ while True:
     R = 1
     P = True
     while G == True:
-        czysc()
-        punkty('4')
+        clean()
         B = False
         for event in pygame.event.get():
 
@@ -135,7 +103,7 @@ while True:
 
         #--draw snake--
         for i in range(length):
-            pygame.draw.rect(okno, Bialy, (snake[i][0], snake[i][1], size, size), 1)
+            pygame.draw.rect(window, White, (snake[i][0], snake[i][1], size, size), 1)
 
         #--move--
         for i in range(length - 1, 0, -1):
